@@ -31,7 +31,9 @@
  * @return {RegExp}
  */
 function getRegexForGuid() {
-   throw new Error('Not implemented');
+  var p = /^\{[\da-fA-F]{8}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{12}\}/i;
+  return p;
+   //throw new Error('Not implemented');
 }
 
 
@@ -53,7 +55,9 @@ function getRegexForGuid() {
  *
  */
 function getRegexForPitSpot() {
-   throw new Error('Not implemented');
+  var p = /p.t/;
+  return p;
+   //throw new Error('Not implemented');
 }
 
 
