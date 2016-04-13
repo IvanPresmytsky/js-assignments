@@ -34,7 +34,40 @@
  *
  */
 function parseBankAccount(bankAccount) {
-    throw new Error('Not implemented');
+
+ var nums = [' _ | ||_|',
+             '     |  |', 
+             ' _  _||_ ', 
+             ' _  _| _|', 
+             '   |_|  |', 
+             ' _ |_  _|',
+             ' _ |_ |_|',
+             ' _   |  |',
+             ' _ |_||_|', 
+             ' _ |_| _|'];
+
+  var lineLen;
+  var result = Array.from({length: 9}, a => []);
+  var resultIndex = 0;
+  var sum = '';
+
+  bankAccount = bankAccount.split('').filter(a => a !== '\n');
+  lineLen = bankAccount.length/3;
+
+  bankAccount.forEach((item, i) => {
+    sum += item;
+
+    if ((i) % lineLen === 0) resultIndex = 0;
+
+    if ((i+1) % 3 === 0) {
+      result[resultIndex].push(sum);
+      sum = '';
+      resultIndex++;
+    }
+  });
+
+  return result.map(a => nums.indexOf(a.join(''))
+         ).join('');
 }
 
 
