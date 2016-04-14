@@ -95,8 +95,26 @@ function parseBankAccount(bankAccount) {
  *                                                                                                'sequence of',
  *                                                                                                'characters.'
  */
-function* wrapText(text, columns) {
-    throw new Error('Not implemented');
+function wrapText(text, columns) {
+  var arr = text.match(/\w*\W/ig);
+  var result = [];
+  var sum = '';
+
+  arr.forEach((item,i) => {
+    sum += item;
+
+    if((sum + (arr[i+1] || arr[-1])).length > columns) {
+      sum = sum.trim();
+      result.push(sum);
+      sum = '';
+    }
+  });
+
+  if(sum) {
+    result.push(sum);
+  }
+
+  return result;
 }
 
 
