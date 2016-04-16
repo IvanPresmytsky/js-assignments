@@ -151,7 +151,62 @@ const PokerRank = {
 }
 
 function getPokerHandRank(hand) {
-    throw new Error('Not implemented');
+
+  function getCardRank(card) {
+    var ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+    var cardRank = card.slice(0, -1);
+    return ranks.indexOf(cardRank);
+  }
+  
+  function defineFlush(hand) {
+    var flush = hand.every( a => a['suit'] === hand[0]['suit'] );
+    return flush ? 5 : 0;
+  }
+
+  function defineStraight(hand) {
+    var ranks = hand.map(a => a['rank']).sort((a,b) => a - b);
+    var len = ranks.length;
+    var uniqRanks = ranks.filter((a, i) => ranks.indexOf(a) === i);
+
+    if (uniqRanks.length !== len) return 0;
+
+    var ranks2 = ranks.map(a => {
+      return (a === 0) ? 13 : a;
+    }).sort((a,b) => a - b);
+    var isStraight = (ranks[len- 1] - ranks[0]) === (len - 1);
+    var isStraight2 = (ranks2[len - 1] - ranks2[0]) === (len - 1);
+
+    return (isStraight || isStraight2) ? 4 : 0;
+  }
+
+  function defineCombination(hand) {
+    var ranks = hand.map(a => a['rank']);
+    var uniqRanks = ranks.filter((a, i) => ranks.indexOf(a) === i);
+    
+    if (uniqRanks.length === ranks.length) return 0;
+    
+    var matches = uniqRanks.map((a,i) => {
+      return ranks.filter((b) => b === a).length;
+  });
+
+    if (matches.indexOf(4) !== -1) return 7;
+    if (matches.indexOf(3) !== -1 && matches.indexOf(2) !== -1) return 6;
+    if (matches.indexOf(3) !== -1) return 3;
+    if (matches.indexOf(2) !== -1 && (matches.indexOf(2) !== matches.lastIndexOf(2))) return 2;
+    if (matches.indexOf(2) !== -1) return 1;
+  }
+
+  hand = hand.map(a => {
+    return {
+      rank: getCardRank(a),
+      suit: a.slice(-1)
+    };
+  });
+  
+  var sum = defineFlush(hand) + defineStraight(hand) + defineCombination(hand);
+
+  return sum < 9 ? sum : 8;
+
 }
 
 
@@ -185,8 +240,8 @@ function getPokerHandRank(hand) {
  *    '|             |\n'+              '+-----+\n'           '+-------------+\n'
  *    '+-------------+\n'
  */
-function* getFigureRectangles(figure) {
-   throw new Error('Not implemented');
+function getFigureRectangles(figure) {
+  throw new Error('Not implemented');
 }
 
 
