@@ -35,7 +35,7 @@
  */
 function parseBankAccount(bankAccount) {
 
- var nums = [' _ | ||_|',
+ const nums = [' _ | ||_|',
              '     |  |', 
              ' _  _||_ ', 
              ' _  _| _|', 
@@ -46,10 +46,10 @@ function parseBankAccount(bankAccount) {
              ' _ |_||_|', 
              ' _ |_| _|'];
 
-  var lineLen;
-  var result = Array.from({length: 9}, a => []);
-  var resultIndex = 0;
-  var sum = '';
+  let lineLen;
+  let result = Array.from({length: 9}, a => []);
+  let resultIndex = 0;
+  let sum = '';
 
   bankAccount = bankAccount.split('').filter(a => a !== '\n');
   lineLen = bankAccount.length/3;
@@ -96,9 +96,9 @@ function parseBankAccount(bankAccount) {
  *                                                                                                'characters.'
  */
 function wrapText(text, columns) {
-  var arr = text.match(/\w*\W/ig);
-  var result = [];
-  var sum = '';
+  let arr = text.match(/\w*\W/ig);
+  let result = [];
+  let sum = '';
 
   arr.forEach((item,i) => {
     sum += item;
@@ -153,39 +153,39 @@ const PokerRank = {
 function getPokerHandRank(hand) {
 
   function getCardRank(card) {
-    var ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
-    var cardRank = card.slice(0, -1);
+    const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+    let cardRank = card.slice(0, -1);
     return ranks.indexOf(cardRank);
   }
   
   function defineFlush(hand) {
-    var flush = hand.every( a => a['suit'] === hand[0]['suit'] );
+    let flush = hand.every( a => a['suit'] === hand[0]['suit'] );
     return flush ? 5 : 0;
   }
 
   function defineStraight(hand) {
-    var ranks = hand.map(a => a['rank']).sort((a,b) => a - b);
-    var len = ranks.length;
-    var uniqRanks = ranks.filter((a, i) => ranks.indexOf(a) === i);
+    let ranks = hand.map(a => a['rank']).sort((a,b) => a - b);
+    let len = ranks.length;
+    let uniqRanks = ranks.filter((a, i) => ranks.indexOf(a) === i);
 
     if (uniqRanks.length !== len) return 0;
 
-    var ranks2 = ranks.map(a => {
+    let ranks2 = ranks.map(a => {
       return (a === 0) ? 13 : a;
     }).sort((a,b) => a - b);
-    var isStraight = (ranks[len- 1] - ranks[0]) === (len - 1);
-    var isStraight2 = (ranks2[len - 1] - ranks2[0]) === (len - 1);
+    let isStraight = (ranks[len- 1] - ranks[0]) === (len - 1);
+    let isStraight2 = (ranks2[len - 1] - ranks2[0]) === (len - 1);
 
     return (isStraight || isStraight2) ? 4 : 0;
   }
 
   function defineCombination(hand) {
-    var ranks = hand.map(a => a['rank']);
-    var uniqRanks = ranks.filter((a, i) => ranks.indexOf(a) === i);
+    let ranks = hand.map(a => a['rank']);
+    let uniqRanks = ranks.filter((a, i) => ranks.indexOf(a) === i);
     
     if (uniqRanks.length === ranks.length) return 0;
     
-    var matches = uniqRanks.map((a,i) => {
+    let matches = uniqRanks.map((a,i) => {
       return ranks.filter((b) => b === a).length;
   });
 
@@ -203,7 +203,7 @@ function getPokerHandRank(hand) {
     };
   });
   
-  var sum = defineFlush(hand) + defineStraight(hand) + defineCombination(hand);
+  let sum = defineFlush(hand) + defineStraight(hand) + defineCombination(hand);
 
   return sum < 9 ? sum : 8;
 
@@ -241,7 +241,57 @@ function getPokerHandRank(hand) {
  *    '+-------------+\n'
  */
 function getFigureRectangles(figure) {
-  throw new Error('Not implemented');
+
+  function drawRectangle(width, height) {
+    let innerWidth = width - 2;
+    let innerHeight = height - 2;
+    let horSide = '+' + '-'.repeat(innerWidth) + '+\n';
+    let vertSide = '|' + ' '.repeat(innerWidth) + '|\n';
+    return horSide + vertSide.repeat(innerHeight) + horSide;
+  }
+   
+  let layers = figure.split('\n').filter(a => a).map(a => a.split(''));
+  
+  let topCoords = layers.map((a, i) => {
+    if(a.indexOf('+') !== -1) {
+      return i;
+    }
+  }).filter(a => typeof(a) === 'number');
+
+  let heightArr = topCoords.map((a, i) => {
+    return (topCoords[i+1] - a) + 1;
+  }).filter(a => a);
+
+  let outerSidesCoords = layers.map((a,i) => {
+    let coords = layers[i].map((b,i) => {
+      if (b === '|') return i;
+      if (b === '+') return i;
+    }).filter(a => typeof(a) === 'number');
+    return coords;
+  });
+
+  let result = [];
+
+  for(let i = 0; i < heightArr.length; i++) {
+    let arr = [];
+    let index = topCoords[i];
+    let len = outerSidesCoords[index].length + 1;
+
+    for(let j = 0; j < len; j++) {
+      let item = outerSidesCoords[index][j];
+      if ((item !== undefined) && outerSidesCoords[index+1].indexOf(item) !== -1) {
+        arr.push(item);
+      }
+      if(arr.length === 2) {
+        let width = (arr[1] - arr[0]) + 1;
+        let height = heightArr[i];
+        let rectangle = drawRectangle(width, height);
+        result.push(rectangle);
+        arr = arr.slice(-1);
+      }
+    }
+  }
+  return result;
 }
 
 
