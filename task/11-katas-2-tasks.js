@@ -35,39 +35,36 @@
  */
 function parseBankAccount(bankAccount) {
 
- const nums = [' _ | ||_|',
-             '     |  |', 
-             ' _  _||_ ', 
-             ' _  _| _|', 
-             '   |_|  |', 
-             ' _ |_  _|',
-             ' _ |_ |_|',
-             ' _   |  |',
-             ' _ |_||_|', 
-             ' _ |_| _|'];
+  const ethalon = ' _     _  _     _  _  _  _  _ \n'+
+                  '| |  | _| _||_||_ |_   ||_||_|\n'+
+                  '|_|  ||_  _|  | _||_|  ||_| _|\n';
+  
+  const ethalonLength = 10;
+  const BALength = 9;
+  const lineHeight = 3;
+  
+  function splitToComponents (BAstr, numCount) {
+    let sum = '';
+    BAstr = BAstr.split('').filter(a => a !== '\n').map((item, i) => {
+      sum += item;
 
-  let lineLen;
-  let result = Array.from({length: 9}, a => []);
-  let resultIndex = 0;
-  let sum = '';
+      if ((i+1) % lineHeight !== 0) return;
 
-  bankAccount = bankAccount.split('').filter(a => a !== '\n');
-  lineLen = bankAccount.length/3;
-
-  bankAccount.forEach((item, i) => {
-    sum += item;
-
-    if ((i) % lineLen === 0) resultIndex = 0;
-
-    if ((i+1) % 3 === 0) {
-      result[resultIndex].push(sum);
+      var x = sum;
       sum = '';
-      resultIndex++;
-    }
-  });
-
-  return result.map(a => nums.indexOf(a.join(''))
-         ).join('');
+      return x;
+    }).filter(a => a);
+    
+    return BAstr.map((a,i) => {
+      if (i > numCount-1) return;
+      return a.concat(BAstr[i+numCount]).concat(BAstr[i+numCount*2]);
+    }).slice(0, numCount);  
+  }
+  
+  let ethalonComponents = splitToComponents(ethalon, ethalonLength);
+  let result = splitToComponents(bankAccount, BALength);
+ 
+  return result.map(a => ethalonComponents.indexOf(a)).join('');
 }
 
 
@@ -96,23 +93,21 @@ function parseBankAccount(bankAccount) {
  *                                                                                                'characters.'
  */
 function wrapText(text, columns) {
-  let arr = text.match(/\w*\W/ig);
-  let result = [];
+  let result = text.match(/\w*\W/ig);
   let sum = '';
 
-  arr.forEach((item,i) => {
+  result = result.map((item,i) => {
     sum += item;
 
-    if((sum + (arr[i+1] || arr[-1])).length > columns) {
-      sum = sum.trim();
-      result.push(sum);
-      sum = '';
-    }
-  });
+    if((sum + (result[i+1] || result[-1])).length <= columns) return;
 
-  if(sum) {
-    result.push(sum);
-  }
+    let y = sum.trim();
+    sum = '';
+    return y;
+    
+  }).filter(a => a);
+
+  if(sum) result.push(sum);
 
   return result;
 }
@@ -253,45 +248,41 @@ function getFigureRectangles(figure) {
   let layers = figure.split('\n').filter(a => a).map(a => a.split(''));
   
   let topCoords = layers.map((a, i) => {
-    if(a.indexOf('+') !== -1) {
-      return i;
-    }
+    if(a.indexOf('+') === -1) return;
+    return i;
   }).filter(a => typeof(a) === 'number');
 
-  let heightArr = topCoords.map((a, i) => {
+  let rectHeightsArr = topCoords.map((a, i) => {
     return (topCoords[i+1] - a) + 1;
   }).filter(a => a);
 
   let outerSidesCoords = layers.map((a,i) => {
-    let coords = layers[i].map((b,i) => {
-      if (b === '|') return i;
-      if (b === '+') return i;
+    return layers[i].map((b,i) => {
+      if (b === ' ') return;
+      return i;
     }).filter(a => typeof(a) === 'number');
-    return coords;
   });
 
-  let result = [];
+  let result = rectHeightsArr.map((a,i) => {
 
-  for(let i = 0; i < heightArr.length; i++) {
-    let arr = [];
     let index = topCoords[i];
-    let len = outerSidesCoords[index].length + 1;
+    let rectangles = outerSidesCoords[index].map((b,j) => {
 
-    for(let j = 0; j < len; j++) {
-      let item = outerSidesCoords[index][j];
-      if ((item !== undefined) && outerSidesCoords[index+1].indexOf(item) !== -1) {
-        arr.push(item);
-      }
-      if(arr.length === 2) {
-        let width = (arr[1] - arr[0]) + 1;
-        let height = heightArr[i];
-        let rectangle = drawRectangle(width, height);
-        result.push(rectangle);
-        arr = arr.slice(-1);
-      }
-    }
-  }
-  return result;
+      if (outerSidesCoords[index+1].indexOf(b) === -1) return;
+      return b;
+     
+    }).filter(b => b !== undefined);
+
+    return rectangles.map((b,j) => {
+      if (rectangles[j+1] === undefined) return;
+        let width = (rectangles[j+1] - b) + 1;
+        let height = rectHeightsArr[i];
+        return drawRectangle(width, height);
+    }).filter(b => b); 
+    
+  });
+  
+  return [].concat.apply([],result);
 }
 
 
