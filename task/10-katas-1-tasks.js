@@ -56,7 +56,26 @@ function createCompassPoints() {
  *   'nothing to do' => 'nothing to do'
  */
 function* expandBraces(str) {
-    throw new Error('Not implemented');
+  const pat = /\{([^{}]+)\}/;
+  let queue = [str];
+  let results = [];
+  
+  while (queue.length > 0) {
+    str = queue.shift();
+    let match = str.match(pat);
+
+    if (match) {
+      let arr = match[1].split(',');
+
+      for (let val of arr) {
+        queue.push(str.replace(match[0], val));
+      }
+
+    } else if (results.indexOf(str) === -1) {
+      results.push(str);
+      yield str;
+    }
+  }
 }
 
 
@@ -137,19 +156,12 @@ function canDominoesMakeRow(dominoes) {
  * [ 1, 2, 4, 5]          => '1,2,4,5'
  */
 function extractRanges(nums) {
-  var result = '';
-    nums.forEach((a,i) => {
-      if (nums[i+1] === a + 1 && nums[i-1] === a - 1){
-        result += '';
-      } else if(nums[i+1] === a + 1 && nums[i+2] === a + 2) {
-        result += `${a}-`;
-      } else if (nums[i-1] === a - 1 && nums[i-2] === a - 2) {
-        result += `${a},`;
-      } else {
-        result += `${a},`;
-      }
-    });
-  return result.slice(0, -1);
+  return nums.reduce((b,a,i) => {
+    if (nums[i+1] === a + 1 && nums[i-1] === a - 1) return `${b}`;
+    if(nums[i+1] === a + 1 && nums[i+2] === a + 2) return `${b}${a}-`;
+    if (nums[i-1] === a - 1 && nums[i-2] === a - 2) return `${b}${a},`;
+    return `${b}${a},`;
+  },'').slice(0, -1);
 }
 
 module.exports = {
