@@ -30,10 +30,10 @@
  *
  */
 function getFizzBuzz(num) {
-    if (num % 3 === 0 && num % 5 === 0) return 'FizzBuzz';
-    else if (num % 3 === 0) return 'Fizz';
-    else if (num % 5 === 0) return 'Buzz';
-    else return num;
+    if (num % 15 === 0) return 'FizzBuzz';
+    if (num % 3 === 0) return 'Fizz';
+    if (num % 5 === 0) return 'Buzz';
+    return num;
 }
 
 
@@ -49,11 +49,8 @@ function getFizzBuzz(num) {
  *   10 => 3628800
  */
 function getFactorial(n) {
-    var result = 1;
-    while (n > 0) {
-      result *= n;
-      n--;
-    }
+    let result = 1;
+    while (n > 0) result *= n--;
     return result;
 }
 
@@ -71,11 +68,8 @@ function getFactorial(n) {
  *   -1,1  =>  0  ( = -1 + 0 + 1 )
  */
 function getSumBetweenNumbers(n1, n2) {
-    var sum = n2;
-    while (n1 < n2) {
-      sum += n1;
-      n1++;
-    }
+    let sum = n2;
+    while (n1 < n2) sum += n1++;
     return sum;
 }
 
@@ -95,10 +89,7 @@ function getSumBetweenNumbers(n1, n2) {
  *   10,10,10 =>  true
  */
 function isTriangle(a,b,c) {
-  var sides = Array.prototype.slice.call(arguments);
-  sides = sides.sort(function findMaxSide(x, y) {
-    return y - x;
-  });
+  let sides = Array.from(arguments).sort((x, y) => y - x);
   return sides[0] < (sides[1] + sides[2]);
 }
 
@@ -172,7 +163,9 @@ function doRectanglesOverlap(rect1, rect2) {
  *   
  */
 function isInsideCircle(circle, point) {
-  return Math.hypot((circle.center.x - point.x), (circle.center.y - point.y)) < circle.radius;
+  let distance1 = circle.center.x - point.x;
+  let distance2 = circle.center.y - point.y;
+  return Math.hypot(distance1 , distance2) < circle.radius;
 }
 
 
@@ -188,10 +181,9 @@ function isInsideCircle(circle, point) {
  *   'entente' => null
  */
 function findFirstSingleChar(str) {
-    var arr =  str.split('');
-    return arr.find(function(char) {
-        return arr.indexOf(char) === arr.lastIndexOf(char);
-    }) || null;
+  let arr =  str.split('');
+  return arr.find(a => arr.indexOf(a) === arr.lastIndexOf(a)) 
+      || null;
 }
 
 
@@ -217,12 +209,12 @@ function findFirstSingleChar(str) {
  *
  */
 function getIntervalString(a, b, isStartIncluded, isEndIncluded) {
-    var startIncluded = isStartIncluded ? '[' : '(';
-    var endIncluded = isEndIncluded ? ']' : ')';
-    var start = Math.min(a, b);
-    var end = Math.max(a, b);
+  let startIncluded = isStartIncluded ? '[' : '(';
+  let endIncluded = isEndIncluded ? ']' : ')';
+  let start = Math.min(a, b);
+  let end = Math.max(a, b);
 
-    return startIncluded + start + ', ' + end + endIncluded;
+  return startIncluded + start + ', ' + end + endIncluded;
 }
 
 
@@ -239,7 +231,7 @@ function getIntervalString(a, b, isStartIncluded, isEndIncluded) {
  * 'noon' => 'noon'
  */
 function reverseString(str) {
-    return str.split('').reverse().join('');
+  return str.split('').reverse().join('');
 }
 
 
@@ -256,7 +248,7 @@ function reverseString(str) {
  *   34143 => 34143
  */
 function reverseInteger(num) {
-     return String(num).split('').reverse().join('');
+  return String(num).split('').reverse().join('');
 }
 
 
@@ -281,19 +273,18 @@ function reverseInteger(num) {
  *   4916123456789012 => false
  */
 function isCreditCardNumber(ccn) {
-  return String(ccn).split('').reverse().map(function countArr(item, index){
-      if((index+1) % 2 === 0) {
-        var num = parseInt(item) * 2;
-        if(num > 9) {
-          num = String(num);
-          num = parseInt(num[0]) + parseInt(num[1]);
-        }
-        return num;
-      }
-      return  parseInt(item);
-    }).reduce(function difineCheckSum(total, currentValue){
-      return total + currentValue;
-  }) % 10 === 0;
+  return String(ccn).split('').reverse().reduce((t, c, i) => {
+    if ((i+1) % 2 !== 0) return  t + parseInt(c);
+
+    let num = parseInt(c) * 2;
+
+    if (num <= 9) return t + num;
+
+    num = String(num);
+    num = parseInt(num[0]) + parseInt(num[1]);
+
+    return t + num;
+  },0) % 10 === 0;
 }
 
 
@@ -313,19 +304,17 @@ function isCreditCardNumber(ccn) {
  */
 function getDigitalRoot(num) {
   function reduceNum (num) {
-    return String(num).split('').reduce( function(previousValue, currentValue){
-             return parseInt(previousValue) + parseInt(currentValue);
-           });
+    return String(num).split('').reduce( (p,c) => parseInt(p) + parseInt(c));
   }
-  var result = reduceNum(num);
+
+  let result = reduceNum(num);
 
   if(result <= 9) return result;
-  else {
-    while(result > 9) {
-      result = reduceNum(result);
-    }
-    return result;
+
+  while(result > 9) {
+    result = reduceNum(result);
   }
+  return result;
 }
 
 
@@ -351,19 +340,19 @@ function getDigitalRoot(num) {
  *   '{[(<{[]}>)]}' = true 
  */
 function isBracketsBalanced(str) {
-  var arr = [];
-  var open  = ['[', '(', '{', '<'];
-  var close = [']', ')', '}', '>'];
+  let stack = [];
+  const open  = ['[', '(', '{', '<'];
+  const close = [']', ')', '}', '>'];
 
-  for (var i = 0; i < str.length; i++) {
+  for (let i = 0; i < str.length; i++) {
     if (open.indexOf(str[i]) >= 0) {
-      arr.push(open.indexOf(str[i]));
+      stack.push(open.indexOf(str[i]));
     } else {
-      var x = arr.pop();
+      let x = stack.pop();
       if (close[x] !== str[i]) return false;
     }
   }
-  return arr.length === 0;
+  return stack.length === 0;
 }
 
 
@@ -399,11 +388,11 @@ function isBracketsBalanced(str) {
  *
  */
 function timespanToHumanString(startDate, endDate) {
-  var time = endDate.getTime() - startDate.getTime();
-  var sec = 1000;
-  var min = sec * 60;
-  var hours = min * 60;
-  var days = hours * 24; 
+  let time = endDate.getTime() - startDate.getTime();
+  const sec = 1000;
+  const min = sec * 60;
+  const hours = min * 60;
+  const days = hours * 24; 
 
   if (time <= 45 * sec) {
     return 'a few seconds ago';
@@ -460,7 +449,7 @@ function timespanToHumanString(startDate, endDate) {
  *    365, 10 => '365'
  */
 function toNaryString(num, n) {
-    return num.toString(n);
+  return num.toString(n);
 }
 
 
@@ -477,26 +466,23 @@ function toNaryString(num, n) {
  *   ['/web/favicon.ico', '/web-scripts/dump', '/webalizer/logs'] => '/'
  */
 function getCommonDirectoryPath(pathes) {
-  var path = '';
-  var i;
-  var len = pathes.map(function(item){
-    return item.length;
-  }).sort(function(a, b){
-    return a - b;
-  })[0];
+  let path = '';
+  let len = pathes.map(a => {
+    return a.length;
+  }).sort((a, b) => a - b)[0];
 
-  for(i = 0; i < len; i++) {
-    var x = true;
+  for(let i = 0; i < len; i++) {
+    let x = true;
 
-    pathes.reduce(function(previousValue, currentValue, index){
-      if(previousValue[i] !== currentValue[i]) {
+    pathes.reduce((p, c, index) => {
+      if(p[i] !== c[i]) {
         x = false;
-        return currentValue;
+        return c;
       }
       if(!path[i] && (index === pathes.length-1)) {
-        path += previousValue[i];
+        path += p[i];
       }
-      return currentValue;
+      return c;
     });
     if(!x) break;
   }
@@ -524,20 +510,17 @@ function getCommonDirectoryPath(pathes) {
  *
  */
 function getMatrixProduct(m1, m2) {
-  var result = [];
-  var i;
-  var j;
-  var k;
-  var sum;
-  var matrixLen = m1.length;
-  var matrixRowLen = m1[0].length;
-  var matrixColLen = m2[0].length;
+  let result = [];
+  let sum;
+  const matrixLen = m1.length;
+  const matrixRowLen = m1[0].length;
+  const matrixColLen = m2[0].length;
 
-  for (i = 0; i < matrixLen; i++) {
+  for (let i = 0; i < matrixLen; i++) {
     result[i] = [];
-    for (j = 0; j < matrixColLen; j++) {
+    for (let j = 0; j < matrixColLen; j++) {
       sum = 0;
-      for (k = 0; k < matrixRowLen; k++) {
+      for (let k = 0; k < matrixRowLen; k++) {
         sum += m1[i][k] * m2[k][j];
       }
       result[i][j] = sum;

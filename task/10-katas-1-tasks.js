@@ -107,7 +107,19 @@ function* expandBraces(str) {
  *
  */
 function getZigZagMatrix(n) {
-    throw new Error('Not implemented');
+  let zigZagMatrix = Array.from({'length': n}, () => []);
+  let currentNum = 0;
+  let diagonalsCount = 2*n - 1;
+  for (let i = 0; i < diagonalsCount; i++) { 
+    for (let j = 0; j < n; j++) {
+      let x;
+      if(i % 2 === 0) x = i - j;
+      else x = i - (n - j - 1);
+      if (x >= 0 && x < n) zigZagMatrix[x].push(currentNum++);  
+    }
+    
+  }
+  return zigZagMatrix;
 }
 
 

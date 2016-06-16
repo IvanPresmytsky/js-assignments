@@ -38,9 +38,7 @@ function findElement(arr, value) {
  *    5 => [ 1, 3, 5, 7, 9 ]
  */
 function generateOdds(len) {
-  return Array(len).fill(1).map(function fillOdsNum(item, i) {
-    return item + i*2;
-  });
+  return Array(len).fill(1).map((a, i) => i * 2 + a);
 }
 
 
@@ -72,9 +70,7 @@ function doubleArray(arr) {
  *    [] => [] 
  */
 function getArrayOfPositives(arr) {
-  return arr.filter(function filterPositivesNum(item) {
-    return item > 0;
-  });
+  return arr.filter(a => a > 0);
 }
 
 /**
@@ -89,9 +85,7 @@ function getArrayOfPositives(arr) {
  *    [ 'cat, 'dog', 'raccon' ] => [ 'cat', 'dog', 'racoon' ]
  */
 function getArrayOfStrings(arr) {
-  return arr.filter(function filterStrings(item) {
-    return typeof(item) === 'string';
-  });
+  return arr.filter(a => typeof(a) === 'string');
 }
 
 /**
@@ -108,9 +102,7 @@ function getArrayOfStrings(arr) {
  *    [ false, 0, NaN, '', undefined ]   => [ ]
  */
 function removeFalsyValues(arr) {
-  return arr.filter(function filterFalse (item) {
-    return item;
-  });
+  return arr.filter(a => a);
 }
 
 /**
@@ -124,9 +116,7 @@ function removeFalsyValues(arr) {
  *    [ 'a', 'b', 'c', 'd', 'e', 'f', 'g' ]  => [ 'A', 'B', 'C', 'D', 'E', 'F', 'G' ]
  */
 function getUpperCaseStrings(arr) {
-  return arr.map(function settUppercase (item) {
-    return item.toUpperCase();
-  });
+  return arr.map(a => a.toUpperCase());
 }
 
 
@@ -141,9 +131,7 @@ function getUpperCaseStrings(arr) {
  *    [ 'angular', 'react', 'ember' ] => [ 7, 5, 5 ]
  */
 function getStringsLength(arr) {
-  return arr.map(function getLength (item) {
-    return item.length;
-  });
+  return arr.map(a => a.length);
 }
 
 /**
@@ -227,9 +215,7 @@ function toCsvText(arr) {
  *   [ 10, 100, -1 ]      => [ 100, 10000, 1 ]
  */
 function toArrayOfSquares(arr) {
-  return arr.map(function powToTwo(item) {
-    return Math.pow(item, 2);
-  });
+  return arr.map(a => Math.pow(a, 2));
 }
 
 
@@ -249,9 +235,7 @@ function toArrayOfSquares(arr) {
  */
 function getMovingSum(arr) {
   var sum = 0;
-  return arr.map(function (item){
-    return sum += item;
-  });
+  return arr.map(a => sum += a);
 }
 
 /**
@@ -266,9 +250,7 @@ function getMovingSum(arr) {
  * [ "a" ] => []
  */
 function getSecondItems(arr) {
-  return arr.filter(function filterEvenIndex(item, i) {
-      return i % 2;
-  });
+  return arr.filter((a, i) => i % 2);
 }
 
 
@@ -287,7 +269,7 @@ function getSecondItems(arr) {
  *  [ 1,2,3,4,5 ] => [ 1, 2,2, 3,3,3, 4,4,4,4, 5,5,5,5,5 ]
  */
 function propagateItemsByPositionIndex(arr) {
-  return arr.reduce(function propagateItems (previousItem, currentItem, index) {
+  return arr.reduce((previousItem, currentItem, index) => {
     currentItem = Array(index+1).fill(currentItem);
     return previousItem.concat(currentItem);
   }, []);
@@ -308,9 +290,7 @@ function propagateItemsByPositionIndex(arr) {
  *   [ 10, 10, 10, 10 ] => [ 10, 10, 10 ]
  */
 function get3TopItems(arr) {
-    return arr.sort(function sortMaxNum(a, b){
-      return b - a;
-    }).slice(0, 3);
+  return arr.sort((a, b) => b - a).slice(0, 3);
 }
  
  
@@ -450,7 +430,7 @@ function toStringList(arr) {
  *      { country: 'Russia',  city: 'Saint Petersburg' }
  */
 function sortCitiesArray(arr) {
-    return arr.sort(function(a, b){
+    return arr.sort((a, b) => {
       return a.country.localeCompare(b.country)
              || a.city.localeCompare(b.city);
     });

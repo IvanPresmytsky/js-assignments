@@ -45,8 +45,8 @@ function parseBankAccount(bankAccount) {
   
   function splitToComponents (BAstr, numCount) {
     let sum = '';
-    BAstr = BAstr.split('').filter(a => a !== '\n').map((item, i) => {
-      sum += item;
+    BAstr = BAstr.split('').filter(a => a !== '\n').map((a, i) => {
+      sum += a;
 
       if ((i+1) % lineHeight !== 0) return;
 

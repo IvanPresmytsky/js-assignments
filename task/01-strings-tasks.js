@@ -226,7 +226,7 @@ function getRectangleString(width, height) {
 function encodeToRot13(str) {
   var alphabet = 'abcdefghijklmnopqrstuvwxyz';
 
-  return str.split("").map( function convertStr (item) {
+  return str.split("").map( item => {
 
     var caseUpper = item.toUpperCase() === item;
     var currentIndex = alphabet.indexOf(item.toLowerCase());
@@ -290,10 +290,9 @@ function isString(value) {
 function getCardId(value) {
   var ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
   var suits = '♣♦♥♠';
-  var suitIndex = value.length-1;
-  var valueRank = value.slice(0, suitIndex);
+  var valueRank = value.slice(0, -1);
 
-  return suits.indexOf(value[suitIndex])*13 + ranks.indexOf(valueRank);
+  return suits.indexOf(value[value.length-1])*13 + ranks.indexOf(valueRank);
 }
 
 
